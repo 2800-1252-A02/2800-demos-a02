@@ -33,6 +33,7 @@ namespace GenericDemoTest
     {
       Trace.WriteLine("Average Test");
       // Included the delta, values must not vary more than the delta or FAIL
+      // Yes this test fails intentionally ! Examine the output.
       Assert.AreEqual( 500, ExtLib.GenerateNums(1000).Average(), 0.1 );
     }
   }
