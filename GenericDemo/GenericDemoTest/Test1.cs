@@ -9,9 +9,6 @@ namespace GenericDemoTest // Name not relevant, pick one
     [TestMethod]
     public void InvalidArgTest() // What is being verified
     {
-      // Not relevant for this specific test, but an example of using
-      //   a test user defined NON-TestMethod
-      Num one = new();
       Assert.ThrowsException<ArgumentException>(() => ExtLib.GenerateNums(-1));
       Assert.ThrowsException<ArgumentException>(() => ExtLib.GenerateNums(-1));
       Assert.ThrowsException<ArgumentException>(() => ExtLib.GenerateNums(-1));
@@ -39,6 +36,17 @@ namespace GenericDemoTest // Name not relevant, pick one
       // Yes this test fails intentionally ! Examine the output.
       Assert.AreEqual( 500, ExtLib.GenerateNums(1000).Average(), 0.1 );
     }
+    [TestMethod]
+    public void UserClassTest()
+    {
+      // No relevant test, but an example of using
+      //   a test user defined NON-TestMethod class ( see bottom ).
+      Num one = new();
+      // or
+      List<Num> nums = [ new Num(), new Num(), new Num() ];
+      // now use nums to perform some tests.
+    }
+
   }
 
   class Num
