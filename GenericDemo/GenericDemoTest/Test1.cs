@@ -1,14 +1,17 @@
 ﻿using GenericDemo;
 using System.Diagnostics;
 
-namespace GenericDemoTest
+namespace GenericDemoTest // Name not relevant, pick one
 {
   [TestClass]
-  public sealed class GenerateNums 
+  public sealed class GenerateNums // this should be the function name to be tested
   {
     [TestMethod]
-    public void InvalidArgTest()
+    public void InvalidArgTest() // What is being verified
     {
+      // Not relevant for this specific test, but an example of using
+      //   a test user defined NON-TestMethod
+      Num one = new();
       Assert.ThrowsException<ArgumentException>(() => ExtLib.GenerateNums(-1));
       Assert.ThrowsException<ArgumentException>(() => ExtLib.GenerateNums(-1));
       Assert.ThrowsException<ArgumentException>(() => ExtLib.GenerateNums(-1));
@@ -36,5 +39,12 @@ namespace GenericDemoTest
       // Yes this test fails intentionally ! Examine the output.
       Assert.AreEqual( 500, ExtLib.GenerateNums(1000).Average(), 0.1 );
     }
+  }
+
+  class Num
+  {
+    //ctor
+    // over Equals
+    // over GetHashCode
   }
 }
