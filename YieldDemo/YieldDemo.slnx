@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="YieldDemo/YieldDemo.csproj" />
+  <Project Path="YieldDemoTestUnit/YieldDemoTestUnit.csproj" />
+</Solution>
