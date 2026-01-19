@@ -10,7 +10,7 @@ namespace YieldDemoTestUnit
     {
       Name = name;
     }
-    override public string ToString()
+    override public string ToString() // Not required for this test, but useful for debugging
     {
       return Name;
     }
@@ -38,6 +38,8 @@ namespace YieldDemoTestUnit
         new RefThing("Five"), // This five
         new RefThing("Six"),
       };
+      // Since we are comparing references, we can use CollectionAssert.AreEqual, it will use ReferenceEquals since we
+      // did not override Equals() in RefThing
       CollectionAssert.AreEqual(
         new List<RefThing> { items[1], items[3], items[5] }, // expected
         items.GetOdds().ToList() // actual - it must be ToList() to force evaluation
