@@ -1,4 +1,6 @@
 // Server Async Demo
+using System.Net;
+using System.Net.Sockets;
 using static System.Diagnostics.Trace;
 
 namespace Server
@@ -6,16 +8,104 @@ namespace Server
   public partial class Server : Form
   {
     const string _msgPrefix = "Server:";
+    Socket? _listener = null;
+    Socket? _client = null;
+
     public Server()
     {
       InitializeComponent();
       BackColor = Color.LightGreen;
+      KeyDown += Server_KeyDown;
     }
 
-    private void Form1_Load(object sender, EventArgs e)
+    private async void Server_KeyDown(object? sender, KeyEventArgs e)
     {
+      if (e.KeyCode == Keys.Enter)
+      {
+        try
+        {
+          // re-entrant ? blow away the old one ?
+          // Depends on Spec
+          // Try if not null.
 
+          // Soft-Disco to let other side know we're done.
+          _listener?.Close();
+        }
+        catch (Exception)
+        {
+        }
+
+        try
+        {
+          // Establish Socket, same as client
+          _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+          // Bind will attempt to put a listening socket on the system, 
+          //  may or may not have privilege to do this
+          //  here we will listen for ANYone, but can be a single or filtered address too
+          //  Port must known/shared with client
+          _listener.Bind(new IPEndPoint(IPAddress.Any, 1666)); // Any incoming address for port 1666
+
+          // Start formal listening, with a backlog Q of 5, allowing for 5 connections
+          //  to be in the processing of connecting, without losing them.
+          // 0 means infinite backlog, but may be limited by system
+          _listener.Listen(0);
+          Msgs("Listening...");
+        }
+        catch (SocketException exc)
+        {
+          Msgs($"Listener:SocketException : {exc.Message}");
+          return;
+        }
+        catch (Exception exc)
+        {
+          Msgs($"Listener:Exception : {exc.Message}");
+          return;
+        }
+      }
+      if (e.KeyCode == Keys.Add)
+      {
+        try
+        {
+          // Allow a full connection to be formed ? Yes, - Accept() the connection..
+
+          // NOT required, but you might have more than client..
+          Socket client = await _listener.AcceptAsync();
+
+          // Add to client list, or just use it - here overwrite member _client
+          _client = client;
+          _client.NoDelay = true; // Turn off Nagel efficiency algorithm..
+          Msgs("Accept Complete, _client socket is good.");
+          //try
+          //{
+          //  // re-entrant ? blow away the old one ?
+          //  // Depends on Spec
+          //  // Try if not null.
+
+          //  // Soft-Disco to let other side know we're done.
+          //  _client?.Shutdown(SocketShutdown.Both);
+          //  _client?.Close();
+          //}
+          //catch (Exception)
+          //{
+          //}
+
+
+        }
+        catch (SocketException exc)
+        {
+          _client = null;
+          Msgs($"Accept:SocketException : {exc.Message}");
+          return;
+        }
+        catch (Exception exc)
+        {
+          _client = null;
+          Msgs($"Accept:Exception : {exc.Message}");
+          return;
+        }
+      }
     }
+
     /// <summary>
     /// UI Helper method, thread-safe to localize UI updates,
     ///  would be good to pass an ENUM in with application state : eConnected, eConnectFailed...etc
