@@ -8,6 +8,7 @@ namespace ConnectionDialogTestHarness
     public Form1()
     {
       InitializeComponent();
+      Text = "Dialog Test Harness";
       KeyDown += Form1_KeyDown;
     }
 
@@ -17,8 +18,11 @@ namespace ConnectionDialogTestHarness
       if( e.KeyCode == Keys.Enter )
       {
         ConnectionDialogLibrary.ConDlg dlg = new();
-        WriteLine(dlg.ShowDialog());
-        //dlg.Name
+        if( dlg.ShowDialog() == DialogResult.OK )
+        {
+          Text = dlg.Name; // Ok meant the name got set,
+        }
+        Text += " : " + dlg.DialogResult; // Append how it closed
       }
     }
   }

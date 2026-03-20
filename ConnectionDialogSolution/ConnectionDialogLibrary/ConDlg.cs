@@ -21,7 +21,11 @@ namespace ConnectionDialogLibrary
       InitializeComponent();
       BackColor = Color.Coral;
       _tim.Interval = 4000;
-      _tim.Tick += (s, e) => { DialogResult = DialogResult.OK;  };
+      _tim.Tick += (s, e) => // Close Dialog on Tick
+        { 
+          Name = DateTime.Now.ToShortTimeString(); // public dialog property
+          DialogResult = DialogResult.OK; // Force dialog to close by setting DialogResult
+        };
       _tim.Start();
     }
   }
