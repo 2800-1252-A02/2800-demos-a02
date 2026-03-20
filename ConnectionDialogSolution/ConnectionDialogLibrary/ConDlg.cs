@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace ConnectionDialogLibrary
@@ -14,6 +15,7 @@ namespace ConnectionDialogLibrary
   {
     //DialogResult r = DialogResult.
     System.Windows.Forms.Timer _tim = new System.Windows.Forms.Timer();
+    public string Name { get; set; }
     public ConDlg()
     {
       InitializeComponent();

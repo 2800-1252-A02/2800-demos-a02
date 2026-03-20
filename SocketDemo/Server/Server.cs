@@ -28,7 +28,7 @@ namespace Server
           // Depends on Spec
           // Try if not null.
 
-          // Soft-Disco to let other side know we're done.
+          // Listener sockets ONLY need Close(), not Shutdown()
           _listener?.Close();
         }
         catch (Exception)
@@ -67,28 +67,13 @@ namespace Server
         try
         {
           // Allow a full connection to be formed ? Yes, - Accept() the connection..
-
-          // NOT required, but you might have more than client..
+          Msgs("Accepting...");
           Socket client = await _listener.AcceptAsync();
 
           // Add to client list, or just use it - here overwrite member _client
           _client = client;
           _client.NoDelay = true; // Turn off Nagel efficiency algorithm..
           Msgs("Accept Complete, _client socket is good.");
-          //try
-          //{
-          //  // re-entrant ? blow away the old one ?
-          //  // Depends on Spec
-          //  // Try if not null.
-
-          //  // Soft-Disco to let other side know we're done.
-          //  _client?.Shutdown(SocketShutdown.Both);
-          //  _client?.Close();
-          //}
-          //catch (Exception)
-          //{
-          //}
-
 
         }
         catch (SocketException exc)
@@ -103,6 +88,36 @@ namespace Server
           Msgs($"Accept:Exception : {exc.Message}");
           return;
         }
+        // Send a message
+        try
+        {
+          // Attempt to send something
+          Random r = new();
+          byte[] buff = new byte[2] { (byte)r.Next(256), (byte)r.Next(256) };
+          //int iNumBytesSent = await _client.SendAsync(new ArraySegment<byte>(buff), SocketFlags.None); // Actual
+          int iNumBytesSent = await _client.SendAsync(buff, SocketFlags.None); // Implicit conversion to ArraySegment
+          Msgs($"Sent {iNumBytesSent} bytes {buff[0]:0b},{buff[1]:0b}");
+        }
+        catch (SocketException exc)
+        {
+          _client = null;
+          Msgs($"Send:SocketException : {exc.Message}");
+          return;
+        }
+        catch (Exception exc)
+        {
+          _client = null;
+          Msgs("Send:Exception : " + exc.Message);
+          return;
+        }
+        Msgs("Send Complete, NOW Soft Disco You");
+        try
+        {
+          _client.Shutdown(SocketShutdown.Both);
+          _client.Close();
+        }
+        catch (Exception)
+        {}
       }
     }
 

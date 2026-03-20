@@ -18,6 +18,7 @@ namespace ConnectionDialogTestHarness
       {
         ConnectionDialogLibrary.ConDlg dlg = new();
         WriteLine(dlg.ShowDialog());
+        //dlg.Name
       }
     }
   }
