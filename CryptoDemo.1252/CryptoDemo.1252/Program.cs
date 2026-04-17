@@ -19,6 +19,8 @@ namespace CryptoDemo._1251
         string public_rsa_key = rsa.ToXmlString(false); // retrieve and save/send public key // CryptoAsymKeysFrame does this in CTOR
 
         // ----------------------------------------------
+        // XFer the public_rsa_key to client
+        // ----------------------------------------------
         // Remote/Client Side - take our public key, make our AES keys, encrypt and send back
         string remote_key = public_rsa_key;
 
@@ -35,12 +37,14 @@ namespace CryptoDemo._1251
         byte[] remote_encrypted_key = rsa.Encrypt(remote_aes.Key, false);// encrypt, false determines padding type, false = PKCS, wider support
         byte[] remote_encrypted_iv = rsa.Encrypt(remote_aes.IV, false);// encrypt
 
+        // -----------------------------------------------
+        // XFer to the Host/Server side, -- faked by an array copy -- you would use a socket to send these bytes back
         // somehow send encrypted data to the "dark-side", use copy below to simulate transfer, also used in CryptoFrames for transfer of byte[]
+        // -----------------------------------------------
         byte[] encrypted_key = new byte[remote_encrypted_key.Length];
         Array.Copy(remote_encrypted_key, encrypted_key, remote_encrypted_key.Length);
         byte[] encrypted_iv = new byte[remote_encrypted_iv.Length];
         Array.Copy(remote_encrypted_iv, encrypted_iv, remote_encrypted_iv.Length);
-
         // ----------------------------------------------
         // Host/Server Side : Remote sent encrypted aes key/iv, decrypt and save
         // Got data, decrypt using rsa private key
